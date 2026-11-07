@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLAR ALERT: 45 Minutes to Impact</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="theme-space">
+  <div id="app" class="dashboard-grid">
+    
+    <!-- Top Telemetry Bar -->
+    <!-- Top Telemetry Bar -->
+    <header class="telemetry-bar">
+      <div class="telemetry-pill">
+        <img src="assets/icons/alert.svg" alt="Alert" class="hud-icon-sm" onerror="this.style.display='none'">
+        <span class="pill-label">NASA DONKI FEED:</span>
+        <span id="telemetry-event" class="pill-value">EVENT #2024-05-10-CME-01</span>
+      </div>
+
+      <div class="station-meta">
+        <span class="site-tag">ARTEMIS BASE CAMP</span>
+        <span class="separator">|</span>
+        <span class="flare-class-tag" id="flare-class">FLARE CLASS: X5.4</span>
+      </div>
+  
+      <button id="btn-audio" class="audio-toggle-btn" aria-label="Toggle Sound">🔊 AUDIO: ON</button>
+
+      <div class="countdown-card">
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <img src="assets/icons/timer.svg" alt="Timer" class="hud-icon-sm" onerror="this.style.display='none'">
+          <span class="countdown-label">TIME TO IMPACT</span>
+        </div>
+        <span id="countdown-clock" class="countdown-value">45:00</span>
+      </div>
+    </header>
+
+    <!-- Main Mission Area -->
+    <main class="main-viewport">
+      
+      <!-- Left Panel: Resource HUD -->
+      <section class="vitals-panel" aria-label="Base Vitals and Crew Status">
+        <h2 class="panel-heading">BASE VITALS & CREW HUD</h2>
+
+        <!-- Radiation Meter with tooltip -->
+        <div class="vital-group">
+          <div class="vital-header">
+            <span class="vital-title">
+              Crew Radiation 
+              <button class="info-bubble" onclick="showTip('mSv')">?</button>
+            </span>
+            <span id="val-radiation" class="vital-readout">0 / 50 mSv</span>
+          </div>
+          <div class="meter-track">
+            <div id="bar-radiation" class="meter-bar safe" style="width: 0%;"></div>
+            <div class="meter-marker" style="left: 50%;" title="50 mSv Safety Limit"></div>
+          </div>
+          <span class="vital-subtext">OSDR Limit: 50 mSv (Yellow) | Critical: 100 mSv</span>
+        </div>
+
+        <!-- Battery Power Meter -->
+        <div class="vital-group">
+          <div class="vital-header">
+            <span class="vital-title">
+                <img src="assets/icons/battery.svg" alt="Battery" class="hud-icon" onerror="this.style.display='none'">
+                Outpost Power
+            </span>
+            <span id="val-power" class="vital-readout">100%</span>
+          </div>
+          <div class="meter-track">
+            <div id="bar-power" class="meter-bar nominal" style="width: 100%;"></div>
+          </div>
+          <span class="vital-subtext">Life support & heaters draw continuously</span>
+        </div>
+
+        <!-- Water Reserves with tooltip -->
+        <div class="vital-group">
+          <div class="vital-header">
+            <span class="vital-title">
+                <img src="assets/icons/water.svg" alt="Water" class="hud-icon" onerror="this.style.display='none'">
+                Water Reserves 
+                <button class="info-bubble" onclick="showTip('WaterWall')">?</button>
+            </span>
+            <span id="val-water" class="vital-readout">80 L</span>
+          </div>
+          <div class="meter-track">
+            <div id="bar-water" class="meter-bar fluid" style="width: 100%;"></div>
+          </div>
+          <span class="vital-subtext">Hydroponic shield & oxygen generation</span>
+        </div>
+
+        <!-- Ice Cores Secured -->
+        <div class="vital-group">
+          <div class="vital-header">
+            <span class="vital-title">
+                <img src="assets/icons/ice-core.svg" alt="Ice" class="hud-icon" onerror="this.style.display='none'">
+                Scientific Ice Cores
+                </span>
+            <span id="val-cores" class="vital-readout">0 / 4 Secured</span>
+          </div>
+          <div class="slots-container" id="cores-slot-container">
+            <div class="core-slot" data-index="1"></div>
+            <div class="core-slot" data-index="2"></div>
+            <div class="core-slot" data-index="3"></div>
+            <div class="core-slot" data-index="4"></div>
+          </div>
+          <span class="vital-subtext">Volatiles & fuel synthesis research payload</span>
+        </div>
+      </section>
+
+      <!-- Right Panel: Radar & Tactical Map Container -->
+      <section class="tactical-panel" aria-label="Lunar Tactical Radar">
+        <div class="radar-header">
+          <h2 class="panel-heading">SHACKLETON CRATER RADAR</h2>
+          <span class="radar-status-badge" id="radar-status">SCANNING WAVEFRONT</span>
+        </div>
+        <div class="radar-canvas-container">
+          <canvas id="radar-canvas" width="600" height="400"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Command Terminal -->
+    <footer class="command-terminal">
+      <div id="feedback-banner" class="feedback-banner hidden">
+        <span id="feedback-text">Decision logged.</span>
+      </div>
+
+      <div id="decision-container" class="decision-card">
+        <div class="decision-meta">
+          <span class="phase-badge" id="decision-phase">CREW EVACUATION</span>
+          <h3 class="decision-title" id="decision-title">EVA Crew Recall & Ice Core Protocol</h3>
+        </div>
+        <p class="decision-situation" id="decision-situation">
+          Specialist Leo and Dr. Maya are 900m away at the drill site with 4 fresh pressurized ice cores.
+        </p>
+        <div class="options-grid" id="options-container">
+          <!-- Dynamic action buttons rendered here -->
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mission Debrief Modal (Hidden by default) -->
+    <div id="debrief-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-badge-wrapper">
+          <img id="modal-badge" src="assets/images/badge-gold.png" alt="Mission Pin" class="badge-icon">
+        </div>
+        <h2 id="modal-title" class="modal-title">The Exemplary Commander</h2>
+        <span id="modal-rank" class="modal-rank">Gold Mission Pin</span>
+        <p id="modal-desc" class="modal-desc">Mission narrative output goes here.</p>
+        
+        <div class="nasa-fact-box">
+          <span class="fact-tag">NASA SCIENCE DEBRIEF</span>
+          <p id="modal-fact" class="fact-text">Grounding fact content.</p>
+        </div>
+
+        <button id="btn-restart" class="btn-restart">REPLAY MISSION</button>
+      </div>
+    </div>
+
+    <!-- Educational Tooltip Modal for Kids -->
+    <div id="tip-modal" class="modal-overlay hidden" onclick="closeTip()">
+      <div class="modal-card tip-card" onclick="event.stopPropagation()">
+        <h3 id="tip-title" class="modal-title" style="font-size: 1.15rem; color: var(--text-highlight);">NASA Mission Science</h3>
+        <p id="tip-body" class="modal-desc" style="font-size: 0.95rem; line-height: 1.5;"></p>
+        <button class="btn-restart" style="padding: 6px 18px; margin-top: 8px;" onclick="closeTip()">GOT IT</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/state.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/radar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
